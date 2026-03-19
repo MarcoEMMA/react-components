@@ -475,16 +475,54 @@ You can describe what you want in plain language instead of editing code manuall
 
 ## How to add a new chart type from ECharts
 
-You can use any chart from the [ECharts examples page](https://echarts.apache.org/examples/en/).
+### The easy way — let the AI do it
 
-### Step 1: Find the chart
+1. Go to https://echarts.apache.org/examples/en/
+2. Click on any chart you like
+3. Click the **TS** tab (not JS)
+4. Copy the entire code
+5. Paste it into the Cursor chat with a message like this:
 
-Go to https://echarts.apache.org/examples/en/ and click on a chart. The important part in
-the example code is the **`option = { ... }`** object — that controls what the chart looks like.
+> **Create a new component from this ECharts example:**
+>
+> ```
+> option = {
+>   xAxis: {
+>     type: 'category',
+>     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+>   },
+>   yAxis: {
+>     type: 'value'
+>   },
+>   series: [
+>     {
+>       data: [820, 932, 901, 934, 1290, 1330, 1320],
+>       type: 'line',
+>       smooth: true
+>     }
+>   ]
+> };
+> ```
 
-### Step 2: Create the component file
+The AI will automatically:
+- Create the component file with proper props
+- Export it from the index
+- Create a Storybook story
+- Make all hardcoded values configurable
 
-Create `src/components/charts/YourChart.tsx` using this template:
+That's it. Run `npm run dev` to see it in Storybook.
+
+### Important: always use the TS tab
+
+On the ECharts examples page, there are two tabs above the code: **JS** and **TS**.
+Always click **TS** before copying. This matches our project's TypeScript setup and
+gives the AI better type information to work with.
+
+### Manual approach (if you prefer)
+
+If you want to do it yourself instead of using the AI:
+
+**1. Create the component** at `src/components/charts/YourChart.tsx`:
 
 ```tsx
 import { useMemo } from "react";
@@ -495,14 +533,13 @@ import type { EChartsOption } from "echarts";
 
 export type YourChartProps = ChartSize & {
   title?: string;
-  // Add your props here
+  // add your props here
   className?: string;
   loading?: boolean;
 };
 
 export function YourChart({
   title,
-  // Destructure your props here
   className,
   loading,
   width,
@@ -510,8 +547,7 @@ export function YourChart({
 }: YourChartProps) {
   const option = useMemo<EChartsOption>(() => {
     return {
-      // Paste the option object from the ECharts example here.
-      // Replace hardcoded values with your props.
+      // paste the option object here, replace hardcoded values with props
       title: title ? { text: title, left: "center" } : undefined,
     };
   }, [title]);
@@ -528,18 +564,14 @@ export function YourChart({
 }
 ```
 
-### Step 3: Export it
-
-Add to `src/components/charts/index.ts`:
+**2. Export it** — add to `src/components/charts/index.ts`:
 
 ```tsx
 export { YourChart } from "./YourChart";
 export type { YourChartProps } from "./YourChart";
 ```
 
-### Step 4: Create a story
-
-Create `stories/YourChart.stories.tsx`:
+**3. Create a story** at `stories/YourChart.stories.tsx`:
 
 ```tsx
 import type { Meta, StoryObj } from "@storybook/react-vite";
@@ -561,17 +593,7 @@ export const Basic: Story = {
 };
 ```
 
-### Step 5: Verify
-
-Run `npm run dev` — your new chart appears in the Storybook sidebar.
-
-### What to copy from ECharts examples
-
-| Copy | Skip |
-|------|------|
-| Everything inside `option = { ... }` | `var chartDom = document.getElementById(...)` |
-| `series`, `xAxis`, `yAxis`, `tooltip`, `legend`, `grid` | `echarts.init(...)` |
-| Data arrays and formatting | `$.get(...)`, `fetch(...)`, jQuery code |
+**4. Verify** — run `npm run dev` and check Storybook.
 
 ---
 
