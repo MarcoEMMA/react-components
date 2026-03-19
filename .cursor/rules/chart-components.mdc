@@ -1,0 +1,52 @@
+---
+description: Use when creating a new chart component, editing an existing chart, adding props to a chart, or converting an ECharts example into a component
+globs: src/components/charts/*.tsx
+alwaysApply: false
+---
+
+# Chart Component Rules
+
+## Structure
+
+Every chart component follows this pattern:
+
+1. Import `BaseChart`, shared types, and theme defaults
+2. Define a `Props` type with simple, readable fields
+3. Build the ECharts `option` object inside `useMemo`
+4. Return `<BaseChart option={option} ... />`
+
+```tsx
+import { useMemo } from "react";
+import { BaseChart } from "./BaseChart";
+import { DEFAULT_COLORS, VARIANT_CONFIG } from "../../utils/theme";
+import type { ChartSize, ChartVariant } from "../../types/chart";
+import type { EChartsOption } from "echarts";
+
+export type MyChartProps = ChartSize & {
+  title?: string;
+  // simple props here — no raw ECharts config exposed
+  variant?: ChartVariant;
+  colors?: string[];
+  className?: string;
+  loading?: boolean;
+};
+
+export function MyChart({ title, variant = "default", colors = DEFAULT_COLORS, className, loading, width, height }: MyChartProps) {
+  const option = useMemo<EChartsOption>(() => {
+    const v = VARIANT_CONFIG[variant];
+    return { /* build option from props */ };
+  }, [/* all deps */]);
+
+  return <BaseChart option={option} className={className} loading={loading} width={width} height={height} />;
+}
+```
+
+## Rules
+
+- Never expose raw ECharts config objects as props — translate them into readable fields
+- Always use `useMemo` for the option object
+- Always include `className`, `loading`, `width`, `height` props via `ChartSize`
+- Use `DEFAULT_COLORS` as the default for any `colors` prop
+- Use `VARIANT_CONFIG` when the component supports `variant`
+- Do NOT modify `BaseChart.tsx` unless fixing a bug in the core wrapper
+- After creating a new component, export it from `src/components/charts/index.ts`

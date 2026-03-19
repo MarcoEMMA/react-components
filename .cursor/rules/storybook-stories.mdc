@@ -1,0 +1,44 @@
+---
+description: Use when creating a new Storybook story, adding story variants, or editing example data and args in a story file
+globs: stories/*.stories.tsx
+alwaysApply: false
+---
+
+# Storybook Story Rules
+
+## Structure
+
+Each component gets one story file in `stories/`. Use Storybook 10 + `@storybook/react-vite`:
+
+```tsx
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { MyChart } from "../src/components/charts/MyChart";
+
+const meta: Meta<typeof MyChart> = {
+  title: "Charts/MyChart",
+  component: MyChart,
+  args: {
+    height: 400,
+    width: 600,
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof MyChart>;
+
+export const Basic: Story = {
+  args: {
+    title: "Example Title",
+    // provide realistic example data
+  },
+};
+```
+
+## Rules
+
+- Import types from `@storybook/react-vite` (not `@storybook/react`)
+- Set sensible default `height` and `width` in `meta.args`
+- Use `argTypes` with `control: "select"` for enum props like `variant`
+- Provide multiple named exports showing different use cases (Basic, WithCustomColors, Compact, etc.)
+- Use realistic, meaningful example data — not placeholder values
+- Every new chart component must have a story file

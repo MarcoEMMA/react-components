@@ -1,0 +1,39 @@
+---
+description: Use when the user shares an ECharts example URL, pastes ECharts example code, or asks to add a new chart type from the ECharts website
+globs: src/components/charts/*.tsx
+alwaysApply: false
+---
+
+# Converting ECharts Examples
+
+When adding a chart from https://echarts.apache.org/examples/en/:
+
+## Copy
+
+- The `option = { ... }` object (series, xAxis, yAxis, tooltip, legend, grid)
+- Data arrays and formatting config
+
+## Skip — these are handled by BaseChart
+
+- `document.getElementById(...)` → BaseChart uses `useRef`
+- `echarts.init(...)` → BaseChart handles this
+- `chart.setOption(...)` → BaseChart handles this
+- `chart.dispose()` → BaseChart handles cleanup
+- `$.get(...)`, `fetch(...)`, jQuery → handle data loading outside the component
+
+## Translate to props
+
+Turn hardcoded values into readable props:
+
+```tsx
+// ECharts example has:
+//   smooth: true, lineStyle: { width: 3 }, areaStyle: { opacity: 0.4 }
+
+// Expose as:
+export type LineSeriesConfig = {
+  smooth?: boolean;    // instead of raw ECharts smooth
+  lineWidth?: number;  // instead of lineStyle.width
+  showArea?: boolean;  // instead of checking areaStyle existence
+  areaOpacity?: number; // instead of areaStyle.opacity
+};
+```

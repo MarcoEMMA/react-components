@@ -1,0 +1,16 @@
+---
+description: Use when writing or editing any TypeScript or TSX file — covers type definitions, imports, and strict mode conventions
+globs: "**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# TypeScript Conventions
+
+- Use `type` over `interface` for props and config objects
+- Export all public types alongside their components
+- Use `import type` for type-only imports
+- Prefer `EChartsOption` from `echarts` for option typing
+- Shared types go in `src/types/chart.ts`
+- Shared constants go in `src/utils/theme.ts`
+- React and react-dom are peer dependencies — never import them in a way that bundles them
+- Keep `strict: true` — no `any` types, no implicit returns

@@ -1,0 +1,32 @@
+---
+description: Project overview and conventions for @eproject/components
+alwaysApply: true
+---
+
+# @eproject/components — Project Context
+
+This is a **React component library** (not an app) built with:
+- React 19 + TypeScript 5.9
+- Apache ECharts 6 for chart rendering
+- Vite 8 in library mode (outputs ESM + CJS to `dist/`)
+- Storybook 10 for component previews
+
+## Key architecture
+
+- `BaseChart.tsx` is the low-level ECharts wrapper — avoid modifying it
+- All chart components (LineChart, BarChart, PieChart, etc.) wrap `BaseChart`
+- Each chart exposes only simple, readable props (title, data, colors, variant)
+- ECharts `option` objects are built inside `useMemo` from those props
+- `src/utils/theme.ts` holds shared defaults (colors, variant layout presets)
+- `src/types/chart.ts` holds shared TypeScript types
+
+## Export structure
+
+- `src/index.ts` → main entry, re-exports everything from `src/components/`
+- Every new component must be exported from `src/components/charts/index.ts`
+
+## Commands
+
+- `npm run dev` — starts Storybook on port 6006
+- `npm run build` — builds the library to `dist/`
+- `npm run lint` — TypeScript type check
